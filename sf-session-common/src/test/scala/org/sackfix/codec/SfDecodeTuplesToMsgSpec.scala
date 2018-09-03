@@ -16,12 +16,7 @@ class SfDecodeTuplesToMsgSpec extends FlatSpec {
   behavior of "SfDecodeTuplesToMsg"
 
   it should "decode a string" in {
-    val msg = s"""8=FIX.4.2${SOH}9=178${SOH}35=8${SOH}49=PHLX${SOH}56=PERS${SOH}34=3444${SOH}
-              |52=20071123-05:30:00.000${SOH}37=orderId${SOH}11=ATOMNOCCC9990900${SOH}20=3${SOH}
-              |150=E${SOH}39=E${SOH}55=MSFT${SOH}167=CS${SOH}54=1${SOH}38=15${SOH}40=2${SOH}
-              |44=15${SOH}17=execcId${SOH}58=PHLX EQUITY TESTING${SOH}59=0${SOH}47=C${SOH}
-              |32=0${SOH}31=0${SOH}151=15${SOH}14=0${SOH}6=0${SOH}10=128${SOH}
-              |""".stripMargin.replace("\n","")
+    val msg = s"""8=FIX.4.2${SOH}9=178${SOH}35=8${SOH}49=PHLX${SOH}56=PERS${SOH}34=3444${SOH}52=20071123-05:30:00.000${SOH}37=orderId${SOH}11=ATOMNOCCC9990900${SOH}20=3${SOH}150=E${SOH}39=E${SOH}55=MSFT${SOH}167=CS${SOH}54=1${SOH}38=15${SOH}40=2${SOH}44=15${SOH}17=execcId${SOH}58=PHLX EQUITY TESTING${SOH}59=0${SOH}47=C${SOH}32=0${SOH}31=0${SOH}151=15${SOH}14=0${SOH}6=0${SOH}10=128${SOH}""".stripMargin.replace("\n","")
     SfDecodeTuplesToMsg.decodeFromStr(msg, (det:DecodingFailedData)=> {
       // reject handler
       fail("Did not expect failure:"+det.description.value)
