@@ -1,5 +1,4 @@
-import sbt._
-import sbt.Keys._
+import sbt.Keys.{libraryDependencies, _}
 
 // Multi project build file.  For val xxx = project, xxx is the name of the project and base dir
 // logging docs: http://doc.akka.io/docs/akka/2.4.16/scala/logging.html
@@ -19,27 +18,6 @@ lazy val commonSettings = Seq(
 	libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test",
 	libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19"  % "test",
 	libraryDependencies += "javax.ws.rs" % "javax.ws.rs-api" % "2.1" artifacts( Artifact("javax.ws.rs-api", "jar", "jar")),
-
-  // Configuring publish to Sonartype, http://www.scala-sbt.org/release/docs/Using-Sonatype.html
-  useGpg := true,
-  pomIncludeRepository := { _ => false },
-  licenses := Seq("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php")),
-  homepage := Some(url("http://www.sackfix.org/")),
-  developers := List(
-    Developer(id = "PendaRed",
-      name  = "Jonathan Gibbons",
-      email = "Jonathan@sackfix.org",
-      url = url("http://www.sackfix.org"))
-  ),
-  publishMavenStyle := true,
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-  },
-  publishArtifact in Test := false
 )
 
 lazy val sfsessioncommon = (project in file("./sf-session-common")).
@@ -52,15 +30,6 @@ lazy val sfsessioncommon = (project in file("./sf-session-common")).
       "org.apache.avro" % "avro-compiler" % "1.8.2",
       "org.apache.avro" % "avro-ipc" % "1.8.2"
     ),
-    // Configuring publish to Sonartype, http://www.scala-sbt.org/release/docs/Using-Sonatype.html
-    description :="Fix decoder, SessionActor, Session statemachine impl, initiator and acceptor framework.  Everything really.",
-    scmInfo := Some(
-      ScmInfo(
-        url("https://github.com/PendaRed/sackfixsessions.git"),
-        "scm:git@github.com:PendaRed/sackfixsessions.git"
-      )
-    )
   )
-
 
 lazy val sackfixsessions = (project in file(".")).aggregate(sfsessioncommon)
