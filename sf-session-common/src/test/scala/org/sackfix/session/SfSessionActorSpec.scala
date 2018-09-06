@@ -43,7 +43,7 @@ class SfSessionActorSpec extends TestKit(ActorSystem("MySpec")) with ImplicitSen
       sessionActor ! ConnectionEstablishedMsgIn(sessOutRouter, Some(logonMessage), None)
 
       // so, it should register with the heartbeater
-      val hbListener = probe1.expectMsgType[AddListenerMsgIn](200 millis)
+      val hbListener = probe1.expectMsgType[AddListenerMsgIn](100 millis)
 
       Thread.sleep(100)
       // It replies with a login message
