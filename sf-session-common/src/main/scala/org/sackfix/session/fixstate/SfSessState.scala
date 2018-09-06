@@ -1,13 +1,11 @@
 package org.sackfix.session.fixstate
 
-import java.time.{LocalDateTime, Period, ZoneOffset}
+import java.time.{LocalDateTime, Period, ZoneId, ZoneOffset}
 
 import org.sackfix.common.message.SfMessage
-import org.sackfix.common.validated.fields.SfFixMessageBody
 import org.sackfix.field.{PossDupFlagField, SessionRejectReasonField, TextField}
-import org.sackfix.fix44._
 import org.sackfix.session._
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.annotation.tailrec
 
@@ -22,7 +20,7 @@ abstract class SfSessState(val id: Int, val stateName: String,
                            val initiator: Boolean, val acceptor: Boolean,
                            val isSessionOpen: Boolean,
                            val isSessionSocketOpen: Boolean = true) {
-  protected lazy val logger = LoggerFactory.getLogger(this.getClass)
+  protected lazy val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   /**
     * On receipt of an event - a socket connection or a message a series of state transitions can fire
@@ -38,7 +36,7 @@ abstract class SfSessState(val id: Int, val stateName: String,
       case Some(newState) =>
         stateTransition(fixSession, newState, ev, actionCallback) match {
           case None => this
-          case Some(newState) => newState
+          case Some(state) => state
         }
     }
   }
@@ -112,10 +110,10 @@ abstract class SfSessState(val id: Int, val stateName: String,
     */
   private[fixstate] def isResentDuplicate(fixSession: SfSession, msgIn: SfMessage) = {
     msgIn.header.possDupFlagField match {
-      case Some(possDupFlag) if (possDupFlag.value) =>
+      case Some(possDupFlag) if possDupFlag.value =>
         val expectedSequenceNumber = fixSession.getExpectedTheirSeqNum
         val msgSeqNum = fixSession.lastTheirSeqNum
-        (msgSeqNum < expectedSequenceNumber)
+        msgSeqNum < expectedSequenceNumber
       case _ => false
     }
   }
@@ -150,7 +148,7 @@ abstract class SfSessState(val id: Int, val stateName: String,
     * 6.	Generate an "error" condition in test output.
     */
   private[fixstate] def handleClocksInSync(fixSession: SfSession, msgIn: SfMessage): Option[SfSessState] = {
-    val now = LocalDateTime.now
+    val now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime
     val msgTime = msgIn.header.sendingTimeField.value
 
     if (isMoreThan2Mins(now, msgTime)) {
@@ -223,7 +221,7 @@ abstract class SfSessState(val id: Int, val stateName: String,
       case SfSessionServerSocketCloseEvent =>
         Some(DetectBrokenNetworkConnection)
       case ev =>
-        logger.error(s"[${sfSession.idStr}] In state [${stateName}], received unexpected event [${ev.name}], ignoring")
+        logger.error(s"[${sfSession.idStr}] In state $stateName, received unexpected event [${ev.name}], ignoring")
         None
     }
   }

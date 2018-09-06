@@ -1,6 +1,6 @@
 package org.sackfix.session.fixstate
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneId}
 
 import org.sackfix.common.message.{SfMessage, SfMessageHeader, SfMessageTrailer}
 import org.sackfix.common.validated.fields.SfFixMessageBody
@@ -16,7 +16,7 @@ object MessageFixtures {
     senderCompIDField = SenderCompIDField("SendFGW"),
     targetCompIDField = TargetCompIDField("TargFGW"),
     msgSeqNumField = MsgSeqNumField(1),
-    sendingTimeField = SendingTimeField(LocalDateTime.now))
+    sendingTimeField = SendingTimeField(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime))
 
   def createHeader(seqNo: Int, msgType: String): SfMessageHeader = {
     new SfMessageHeader(beginStringField = BeginStringField("Fix4.2"),
@@ -24,10 +24,10 @@ object MessageFixtures {
       senderCompIDField = SenderCompIDField("SendFGW"),
       targetCompIDField = TargetCompIDField("TargFGW"),
       msgSeqNumField = MsgSeqNumField(seqNo),
-      sendingTimeField = new SendingTimeField(LocalDateTime.now)) //"20170101-10:26:32"))
+      sendingTimeField = new SendingTimeField(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime)) //"20170101-10:26:32"))
   }
 
-  def createHeader(bodyLen: Int, seqNo: Int, msgType: String, sendingTimeField: SendingTimeField = SendingTimeField(LocalDateTime.now)) :SfMessageHeader = {
+  def createHeader(bodyLen: Int, seqNo: Int, msgType: String, sendingTimeField: SendingTimeField = SendingTimeField(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime)) :SfMessageHeader = {
     new SfMessageHeader(beginStringField = BeginStringField("Fix4.2"),
       bodyLengthField = Some(BodyLengthField(bodyLen)),
       msgTypeField = MsgTypeField(msgType),
@@ -89,27 +89,13 @@ object MessageFixtures {
     val body = new NewOrderSingleMessage(clOrdIDField = ClOrdIDField(clOrdID),
       instrumentComponent = InstrumentComponent(symbolField = SymbolField("JPG.GB")),
       sideField = SideField(SideField.Buy),
-      transactTimeField = TransactTimeField(LocalDateTime.now),
+      transactTimeField = TransactTimeField(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime),
       orderQtyDataComponent = OrderQtyDataComponent(orderQtyField = Some(OrderQtyField(100))),
       ordTypeField = OrdTypeField(OrdTypeField.Market))
     // Because we are injecting this message into the fix handler, we want body len and
     // checksum to be valid, which means we must generate them by asking for the fix string
     createValidFixMessage(head, body)
   }
-
-  def newOrderSingleNowTime(seqNo: Int, clOrdID: String): SfMessage = {
-    val head = createHeader(seqNo, MsgTypeField.OrderSingle)
-    val body = new NewOrderSingleMessage(clOrdIDField = ClOrdIDField(clOrdID),
-      instrumentComponent = InstrumentComponent(symbolField = SymbolField("JPG.GB")),
-      sideField = SideField(SideField.Buy),
-      transactTimeField = TransactTimeField(LocalDateTime.now),
-      orderQtyDataComponent = OrderQtyDataComponent(orderQtyField = Some(OrderQtyField(100))),
-      ordTypeField = OrdTypeField(OrdTypeField.Market))
-    // Because we are injecting this message into the fix handler, we want body len and
-    // checksum to be valid, which means we must generate them by asking for the fix string
-    createValidFixMessage(head, body)
-  }
-
 
   private def createValidFixMessage(head: SfMessageHeader, body: SfFixMessageBody): SfMessage = {
     val interimMsg = new SfMessage(head, body)

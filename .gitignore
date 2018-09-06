@@ -1,5 +1,6 @@
 /target
 /project/target
+/project/target/config-classes
 /project/project/target
 /.idea
 /logs/
