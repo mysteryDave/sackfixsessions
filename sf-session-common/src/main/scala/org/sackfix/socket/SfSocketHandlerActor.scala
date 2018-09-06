@@ -238,7 +238,7 @@ class SfSocketHandlerActor(val sessionType: SfSessionType, val connection: Actor
       senderCompIDField = SenderCompIDField(sessId.targetCompId),
       targetCompIDField = TargetCompIDField(sessId.senderCompId),
       msgSeqNumField = MsgSeqNumField(0),
-      sendingTimeField = SendingTimeField(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime))
+      sendingTimeField = SendingTimeField(LocalDateTime.now().atZone(ZoneId.of("UTC")).toLocalDateTime))
 
     new SfMessage(header, outgoingMsgBody)
   }

@@ -32,7 +32,7 @@ class SfSessStateSpec extends FlatSpec {
   }
 
   it should "detect a 2 min gap" in {
-    val now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime
+    val now = LocalDateTime.now().atZone(ZoneId.of("UTC")).toLocalDateTime
 
     val s =  TestSessState
     assert(!s.isMoreThan2Mins(now, now.minusMinutes(1)))

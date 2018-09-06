@@ -135,7 +135,7 @@ class SfSessionImpl(sessionType: SfSessionType,
       targetCompIDField = TargetCompIDField(sessionId.targetCompId),
       msgSeqNumField = MsgSeqNumField(seqNum),
       possDupFlagField = possDupFlagField,
-      sendingTimeField = SendingTimeField(LocalDateTime.now.atZone(ZoneId.systemDefault).toLocalDateTime),
+      sendingTimeField = SendingTimeField(LocalDateTime.now.atZone(ZoneId.of("UTC")).toLocalDateTime),
       origSendingTimeField = origSendingTimeField)
 
     new SfMessage(header, outgoingMsgBody)

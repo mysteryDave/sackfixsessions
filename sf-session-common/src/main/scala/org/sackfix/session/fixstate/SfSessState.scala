@@ -148,7 +148,7 @@ abstract class SfSessState(val id: Int, val stateName: String,
     * 6.	Generate an "error" condition in test output.
     */
   private[fixstate] def handleClocksInSync(fixSession: SfSession, msgIn: SfMessage): Option[SfSessState] = {
-    val now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime
+    val now = LocalDateTime.now().atZone(ZoneId.of("UTC")).toLocalDateTime
     val msgTime = msgIn.header.sendingTimeField.value
 
     if (isMoreThan2Mins(now, msgTime)) {

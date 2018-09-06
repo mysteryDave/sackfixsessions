@@ -16,7 +16,7 @@ object MessageFixtures {
     senderCompIDField = SenderCompIDField("SendFGW"),
     targetCompIDField = TargetCompIDField("TargFGW"),
     msgSeqNumField = MsgSeqNumField(1),
-    sendingTimeField = SendingTimeField(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime))
+    sendingTimeField = SendingTimeField(LocalDateTime.now().atZone(ZoneId.of("UTC")).toLocalDateTime))
 
   def createHeader(seqNo: Int, msgType: String): SfMessageHeader = {
     new SfMessageHeader(beginStringField = BeginStringField("Fix4.2"),
@@ -24,10 +24,10 @@ object MessageFixtures {
       senderCompIDField = SenderCompIDField("SendFGW"),
       targetCompIDField = TargetCompIDField("TargFGW"),
       msgSeqNumField = MsgSeqNumField(seqNo),
-      sendingTimeField = new SendingTimeField(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime)) //"20170101-10:26:32"))
+      sendingTimeField = new SendingTimeField(LocalDateTime.now().atZone(ZoneId.of("UTC")).toLocalDateTime)) //"20170101-10:26:32"))
   }
 
-  def createHeader(bodyLen: Int, seqNo: Int, msgType: String, sendingTimeField: SendingTimeField = SendingTimeField(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime)) :SfMessageHeader = {
+  def createHeader(bodyLen: Int, seqNo: Int, msgType: String, sendingTimeField: SendingTimeField = SendingTimeField(LocalDateTime.now().atZone(ZoneId.of("UTC")).toLocalDateTime)) :SfMessageHeader = {
     new SfMessageHeader(beginStringField = BeginStringField("Fix4.2"),
       bodyLengthField = Some(BodyLengthField(bodyLen)),
       msgTypeField = MsgTypeField(msgType),
@@ -89,7 +89,7 @@ object MessageFixtures {
     val body = new NewOrderSingleMessage(clOrdIDField = ClOrdIDField(clOrdID),
       instrumentComponent = InstrumentComponent(symbolField = SymbolField("JPG.GB")),
       sideField = SideField(SideField.Buy),
-      transactTimeField = TransactTimeField(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime),
+      transactTimeField = TransactTimeField(LocalDateTime.now().atZone(ZoneId.of("UTC")).toLocalDateTime),
       orderQtyDataComponent = OrderQtyDataComponent(orderQtyField = Some(OrderQtyField(100))),
       ordTypeField = OrdTypeField(OrdTypeField.Market))
     // Because we are injecting this message into the fix handler, we want body len and
