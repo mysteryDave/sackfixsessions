@@ -33,7 +33,7 @@ class SfSessionActorTimingSpec extends TestKit(ActorSystem("MySpec")) with Impli
       val numInTest = 10000
       val msgs = ArrayBuffer.empty[SfMessage]
       for (testNum <- 0 to numInTest + 400) {
-        msgs += MessageFixtures.newOrderSingleNowTime(2+testNum, "ClientOrderId")
+        msgs += MessageFixtures.newOrderSingle(2+testNum, "ClientOrderId")
       }
       for (tstNum <- 0 to 3) {
         val probe1 = TestProbe()
@@ -79,7 +79,7 @@ class SfSessOutEventRouterTimingStub(override val sfSessionActor: ActorRef, over
   var startTimerNanos :Long= System.nanoTime()
   var stopTimerNanos :Long= Long.MaxValue
 
-  def startTimer(numBizMsgs:Int) = synchronized {
+  def startTimer(numBizMsgs:Int): Unit = synchronized {
     startTimerNanos = System.nanoTime()
     expectedNumBizMsgs = numBizMsgs
     msgsToBusiness=0
@@ -92,18 +92,18 @@ class SfSessOutEventRouterTimingStub(override val sfSessionActor: ActorRef, over
     stopTimerNanos - startTimerNanos
   }
   override def confirmCorrectTcpActor(checkTcpActor: ActorRef):Boolean = true
-  override def logOutgoingFixMsg(fixMsgStr: String) = fixMsgsCnt += 1
-  override def informBusinessLayerSessionIsOpen = msgsToBusiness =0
-  override def informBusinessLayerSessionIsClosed = {}
-  override def informBusinessMessageArrived(msg:SfMessage) = synchronized {
+  override def logOutgoingFixMsg(fixMsgStr: String): Unit = fixMsgsCnt += 1
+  override def informBusinessLayerSessionIsOpen: Unit = msgsToBusiness =0
+  override def informBusinessLayerSessionIsClosed: Unit = {}
+  override def informBusinessMessageArrived(msg:SfMessage): Unit = synchronized {
     if (msgsToBusiness==expectedNumBizMsgs) {
       stopTimerNanos = System.nanoTime()
       actualMessages = msgsToBusiness
     }
     msgsToBusiness+=1
   }
-  override def informBusinessMessageAcked(correlationId:String) = {}
-  override def closeThisFixSessionsSocket = {}
+  override def informBusinessMessageAcked(correlationId: String): Unit = {}
+  override def closeThisFixSessionsSocket: Unit = {}
   override def informBusinessRejectArrived(fixMsg: SfMessage): Unit = {}
 }
 }

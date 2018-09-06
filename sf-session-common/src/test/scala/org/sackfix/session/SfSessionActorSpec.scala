@@ -61,7 +61,7 @@ class SfSessionActorSpec extends TestKit(ActorSystem("MySpec")) with ImplicitSen
       assert(store.getInfo(sessionId).mySeq==2)
       assert(store.getInfo(sessionId).theirSeq==2)
 
-      val orderSingle = MessageFixtures.newOrderSingleNowTime(2,"ClientOrderId")
+      val orderSingle = MessageFixtures.newOrderSingle(2,"ClientOrderId")
       sessionActor ! FixMsgIn(orderSingle)
 
       Thread.sleep(200)

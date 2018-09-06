@@ -1,6 +1,6 @@
 package org.sackfix.session.fixstate
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneId}
 
 import org.sackfix.session._
 import org.scalatest.FlatSpec
@@ -32,13 +32,13 @@ class SfSessStateSpec extends FlatSpec {
   }
 
   it should "detect a 2 min gap" in {
-    val now = LocalDateTime.now()
+    val now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime
 
     val s =  TestSessState
-    assert(false==s.isMoreThan2Mins(now, now.minusMinutes(1)))
-    assert(false==s.isMoreThan2Mins(now, now.plusSeconds(100)))
-    assert(true==s.isMoreThan2Mins(now, now.minusMinutes(3)))
-    assert(true==s.isMoreThan2Mins(now, now.plusSeconds(121)))
+    assert(!s.isMoreThan2Mins(now, now.minusMinutes(1)))
+    assert(!s.isMoreThan2Mins(now, now.plusSeconds(100)))
+    assert(s.isMoreThan2Mins(now, now.minusMinutes(3)))
+    assert(s.isMoreThan2Mins(now, now.plusSeconds(121)))
   }
 
   it should "transition with no callback action, and stop" in {
@@ -51,7 +51,7 @@ class SfSessStateSpec extends FlatSpec {
       case Some( newState @ TestSessState1 ) =>  // pass
       case v @ _ => fail("Expected state "+s1 + " and not "+v)
     }
-    assert(cb.action==None)
+    assert(cb.action.isEmpty)
   }
   it should "transition with callback action, and stop" in {
     val sess = new SfSessionStub
@@ -77,7 +77,7 @@ class SfSessStateSpec extends FlatSpec {
     val newState = s.stateTransition(sess,sAction, SfSessionServerSocketOpenEvent, cb.callback)
     // So it calls TestSessState, with new state TestSessStateWithAction which immediately transitions
     // one more time to TestSessState1
-    assert(cb.action==None)
+    assert(cb.action.isEmpty)
     assert(newState.getOrElse(TestSessState) == TestSessState1)
   }
 

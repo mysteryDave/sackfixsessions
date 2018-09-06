@@ -18,7 +18,7 @@ import org.sackfix.session.SfSessionId
   * to the actor.  You can look after your own ActorRef and lifecycle.
   */
 trait SfBusinessFixInfo {
-  //val tstamp = LocalDateTime.now()
+  //val tstamp = LocalDateTime.now() //Commenting out as appears to be unused.
 
   def sessionId: SfSessionId
 }
