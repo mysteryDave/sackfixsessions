@@ -19,7 +19,8 @@ class SfFileMessageStoreSpec extends FlatSpec {
     val sessionId = new SfSessionId("beginString","senderCompId","targetCompId")
     val session = new SfSessionStub
     val initialIds = fileStore.initialiseSession(sessionId, false)
-    assert("C:\\all_dev\\sackfix\\sackfixsessions\\.\\test\\resources\\tmp\\acceptor\\beginstring-sendercompid-targetcompid." == fileStore.getStore(sessionId).prefixCode)
+    val baseDir = new java.io.File(".").getCanonicalPath
+    assert(baseDir + "\\" + ".\\test\\resources\\tmp\\acceptor\\beginstring-sendercompid-targetcompid." == fileStore.getStore(sessionId).prefixCode)
 
     fileStore.close(sessionId)
   }

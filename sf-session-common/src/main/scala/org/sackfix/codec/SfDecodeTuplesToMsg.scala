@@ -56,6 +56,8 @@ object SfDecodeTuplesToMsg {
         None
       case (None, None) => // Message was garbled, ignore it, do not increment incoming seq num
         None
+      case (_,_) => // As above, don't care
+        None
       case _ => // As above, don't care
         None
     }
