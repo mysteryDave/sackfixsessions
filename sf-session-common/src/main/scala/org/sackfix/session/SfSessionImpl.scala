@@ -1,10 +1,10 @@
 package org.sackfix.session
 
-import java.time.{LocalDateTime, ZoneId}
+import java.time.LocalDateTime
 
 import akka.actor.ActorRef
 import org.sackfix.codec.{DecodingFailedData, SfDecodeTuplesToMsg}
-import org.sackfix.common.message.{SfMessage, SfMessageHeader}
+import org.sackfix.common.message.{SfFixUtcTime, SfMessage, SfMessageHeader}
 import org.sackfix.common.validated.fields.SfFixMessageBody
 import org.sackfix.field.{NewSeqNoField, _}
 import org.sackfix.fix44.{RejectMessage, SequenceResetMessage}
@@ -135,7 +135,7 @@ class SfSessionImpl(sessionType: SfSessionType,
       targetCompIDField = TargetCompIDField(sessionId.targetCompId),
       msgSeqNumField = MsgSeqNumField(seqNum),
       possDupFlagField = possDupFlagField,
-      sendingTimeField = SendingTimeField(LocalDateTime.now.atZone(ZoneId.of("UTC")).toLocalDateTime),
+      sendingTimeField = SendingTimeField(SfFixUtcTime.now),
       origSendingTimeField = origSendingTimeField)
 
     new SfMessage(header, outgoingMsgBody)

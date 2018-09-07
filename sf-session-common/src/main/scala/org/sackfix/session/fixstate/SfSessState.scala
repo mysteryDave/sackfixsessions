@@ -1,8 +1,8 @@
 package org.sackfix.session.fixstate
 
-import java.time.{LocalDateTime, Period, ZoneId, ZoneOffset}
+import java.time.LocalDateTime
 
-import org.sackfix.common.message.SfMessage
+import org.sackfix.common.message.{SfFixUtcTime, SfMessage}
 import org.sackfix.field.{PossDupFlagField, SessionRejectReasonField, TextField}
 import org.sackfix.session._
 import org.slf4j.{Logger, LoggerFactory}
@@ -148,7 +148,7 @@ abstract class SfSessState(val id: Int, val stateName: String,
     * 6.	Generate an "error" condition in test output.
     */
   private[fixstate] def handleClocksInSync(fixSession: SfSession, msgIn: SfMessage): Option[SfSessState] = {
-    val now = LocalDateTime.now().atZone(ZoneId.of("UTC")).toLocalDateTime
+    val now = SfFixUtcTime.now
     val msgTime = msgIn.header.sendingTimeField.value
 
     if (isMoreThan2Mins(now, msgTime)) {

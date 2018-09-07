@@ -5,7 +5,7 @@ import sbt.Keys.{libraryDependencies, _}
 
 lazy val commonSettings = Seq(
 	organization := "org.sackfix",
-	version := "0.1.1",
+	version := "0.1.2",
 	scalaVersion := "2.12.6",
 
 	libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3" % "runtime", // without %runtime did not work in intellij
