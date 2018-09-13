@@ -52,7 +52,7 @@ case class SfInitiatorBooter(val guardianActor: ActorRef, context: ActorContext,
   // Load the config into an extension object, so can get at values as fields.
   val settings = SfInitiatorSettings(context.system)
   logger.info("Config:" + settings.dumpConfig())
-  val heartbeater = context.actorOf(SfHeartbeaterActor.props(1000))
+  val heartbeater: ActorRef = context.actorOf(SfHeartbeaterActor.props(1000), name="heartbeater")
   val latencyRecorderActorRef = Some(context.actorOf(LatencyActor.props(1000), name="SfLatencyRecorder"))
 
   // Maybe they have configured many client connections, I have no idea why they would.....
